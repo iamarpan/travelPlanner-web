@@ -2,20 +2,9 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import {
-  MapPinIcon,
-  CalendarDaysIcon,
-  CheckCircleIcon,
-  DevicePhoneMobileIcon,
-  ClockIcon,
-  ShieldCheckIcon
-} from '@heroicons/react/24/outline';
+// Removed unused heroicons imports
 import { motion } from 'framer-motion';
-import { map } from 'leaflet';
-import { GoDot } from "react-icons/go";
-import { GoDotFill } from "react-icons/go";
 import { FaLongArrowAltRight } from "react-icons/fa";
-import { title } from 'process';
 
 export default function HomePage() {
   const [isLoaded, setIsLoaded] = useState(false);
@@ -24,6 +13,12 @@ export default function HomePage() {
   const [step2, setStep02] = useState(false);
   const [step3, setStep03] = useState(false)
   const [images, setImages] = useState([
+    {
+      title:"Tokyo Spring Adventure",
+      desc:"Explore cherry blossoms, traditional temples, and modern Tokyo culture during the beautiful Spring Season.",
+      src:"/Tokyo.avif",
+      showDesc:false
+    },
     {
       title: "Vrindavan",
       desc: "Experience the spiritual heart of India with temples, ghats, and vibrant culture.",
@@ -135,6 +130,53 @@ export default function HomePage() {
     },
   ];
 
+  // Suggested text color schemes for each hero image (ensure good contrast)
+  // hero-5.jpg: likely dark, so use white or light blue
+  // hero-4.jpg: check if light/dark, adjust accordingly
+  // hero-3.jpg: check if light/dark, adjust accordingly
+  // hero-2.jpg: check if light/dark, adjust accordingly
+  // hero-1.jpg: likely light, so use dark blue or black
+
+  const heroImages = [
+    "/hero-5.jpg",
+    "/hero-4.jpg",
+    "/hero-3.jpg",
+    "/hero-2.jpg",
+    "/hero-1.jpg"
+  ];
+
+  // Example color schemes for text on top of each hero image
+  
+  const [index, setIndex] = useState(0);
+  const colorSchemes=[
+    {
+      text1:"#1d4ed8",
+      text2:"white",
+    },
+    {
+      text1:"white",
+      text2:"white",
+    },
+    {
+      text1:"black",
+      text2:"white",
+    },
+    {
+      text1:"white",
+      text2:"black",
+    },
+    {
+      text1:"#1e3a8a",
+      text2:"white",
+    }
+  ]
+
+  useEffect(()=>{
+    setInterval(()=>{
+      setIndex((prevIndex) => (prevIndex + 1) % heroImages.length);
+    },5000)
+  },[])
+
   return (
     <div className={`min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50 ${isLoaded ? 'animate-fade-in' : 'opacity-0'}`}>
       {/* Header */}
@@ -145,7 +187,7 @@ export default function HomePage() {
               <div className="w-8 h-8 bg-gradient-to-r from-blue-700 to-blue-900 rounded-lg flex items-center justify-center">
                 <span className="text-white font-bold text-sm">T</span>
               </div>
-              <span className="text-xl font-bold text-gray-900">TravelPartner</span>
+              <span className="text-xl font-bold text-green-950">TravelPartner</span>
             </div>
             <motion.button whileHover={{ scale: 0.85 }}>
               <Link
@@ -159,57 +201,78 @@ export default function HomePage() {
       </header>
 
       {/* Hero Section */}
-      <section className="min-h-[60vh] py-24 sm:py-32 bg-[url('/hero-section.avif')] bg-no-repeat bg-cover flex items-center">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
+      <section
+        className="min-h-[85vh] py-24 sm:py-32 bg-no-repeat bg-cover flex items-center relative overflow-hidden"
+      >
+        {/* Animated background image */}
+        <div className="absolute inset-0 w-full h-full">
+          <motion.div
+        key={index}
+        initial={{ opacity: 0, scale: 1.05, x: 50 }}
+        animate={{ opacity: 1, scale: 1, x: 0 }}
+        exit={{ opacity: 0, scale: 0.95, x: -50 }}
+        transition={{ duration: 1 }}
+        className="absolute inset-0 w-full h-full"
+        style={{
+          backgroundImage: `url(${heroImages[index]})`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          zIndex: 0,
+        }}
+          />
+        </div>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full relative z-10">
           <div className="text-center">
-            <h1
-              className={`text-4xl sm:text-6xl font-bold text-blue-950 `}>
-              {texts[0].split(" ").map((el, i) => (
-                <motion.span
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{
-                    duration: 1,
-                    delay: 1 + i / 10,
-                  }}
-                  key={i}
-                >
-                  {el}{" "}
-                </motion.span>
-              ))}
-            </h1>
-            <h1 className="block text-4xl sm:text-6xl bg-clip-text text-slate-100">
-              {texts[1].split(" ").map((el, i) => (
-                <motion.span
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{
-                    duration: 1,
-                    delay: 2 + i / 10,
-                  }}
-                  key={i}
-                >
-                  {el}{" "}
-                </motion.span>
-              ))}
-            </h1>
-            <br />
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <motion.button whileHover={{ scale: 0.85 }}>
-                <Link
-                  href="/app"
-                  className="btn-primary text-lg px-8 py-3"
-                >
-                  Start Planning Free
-                </Link></motion.button>
-              <motion.button whileHover={{ scale: 0.85 }}>
-                <Link
-                  href="/demo"
-                  className="btn-secondary text-lg px-8 py-3"
-                >
-                  View Demo
-                </Link></motion.button>
-            </div>
+        <h1
+          className={`text-4xl sm:text-6xl font-extrabold text-black-950 `}
+          style={{color:`${colorSchemes[index].text1}`}}>
+          {texts[0].split(" ").map((el, i) => (
+            <motion.span
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{
+            duration: 1,
+            delay: 1 + i / 10,
+          }}
+          key={i}
+            >
+          {el}{" "}
+            </motion.span>
+          ))}
+        </h1>
+        <h1 className="block text-4xl sm:text-6xl bg-clip-text text-slate-100 font-bold"
+        style={{color:`${colorSchemes[index].text2}`,marginTop:"1rem"}}>
+          {texts[1].split(" ").map((el, i) => (
+            <motion.span
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{
+            duration: 1,
+            delay: 2 + i / 10,
+          }}
+          key={i}
+            >
+          {el}{" "}
+            </motion.span>
+          ))}
+        </h1>
+        <br />
+        <div className="flex flex-col sm:flex-row gap-4 justify-center mt-4">
+          <motion.button whileHover={{ scale: 0.85 }}>
+            <Link
+          href="/app"
+          className="btn-primary text-lg px-8 py-3"
+            >
+          Start Planning Free
+            </Link></motion.button>
+          <motion.button whileHover={{ scale: 0.85 }}>
+            <Link
+          href="/demo"
+          className="btn-secondary text-lg px-8 py-3"
+            >
+          View Demo
+            </Link></motion.button>
+        </div>
           </div>
         </div>
       </section>
@@ -271,7 +334,9 @@ export default function HomePage() {
           <div className='mt-10 overflow-x-auto whitespace-nowrap mb-40 scrollbar-hide'>
             {images.map((image, i) =>
                 <div key={i} className="bg-gray-100 inline-block mr-6 align-top w-80 border-2 border-slate-100">
+                <Link href={`/explore/${i}`}>
                 <img src={image.src} className="w-80 h-64 rounded-lg shadow-md" alt={image.title} />
+                </Link>
                 <div className='flex row justify-between'>
                    <p className="font-semibold mt-2">{image.title}</p>
                    {image.showDesc?
